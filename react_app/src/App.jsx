@@ -36,6 +36,7 @@ function App() {
             <Route element={<AddContact 
               thisUser = { thisUser } 
               setThisUser = { setThisUser }
+              thisContact = { thisContact }
             />} path="/contacts/new" />
             <Route element={<EditContact 
               thisUser = { thisUser } 

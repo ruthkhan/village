@@ -38,7 +38,9 @@ class Contact:
             ORDER BY commsDate DESC;
             """
         results = connectToMySQL(cls.DB).query_db(query, data)
+        print(results)
         if results: 
+            print(results)
             results = Contact.convert_date(results)
             return results
         return False
@@ -90,5 +92,6 @@ class Contact:
     @staticmethod 
     def convert_date(results): 
         for row in results: 
-            row['commsDate'] = row['commsDate'].strftime("%Y-%m-%d")
+            if row['commsDate']: 
+                row['commsDate'] = row['commsDate'].strftime("%Y-%m-%d")
         return results

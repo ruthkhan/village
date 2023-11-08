@@ -6,7 +6,7 @@ import ContactForm from '../components/ContactForm'
 
 const AddContact = (props) => {
 
-    const { thisUser, setThisUser } = props
+    const { thisUser, setThisUser, thisContact } = props
     const [errors, setErrors] = useState([])
     const [homepage, setHomepage] = useState(false)
     const navigate = useNavigate()
@@ -30,6 +30,7 @@ const AddContact = (props) => {
             <Header 
                 thisUser = { thisUser }
                 setThisUser = { setThisUser }
+                thisContact = { thisContact }
                 homepage = { homepage }
             />
             <h1>Add New Contact</h1>
