@@ -1,26 +1,40 @@
-import React, { useState, useEffect } from 'react'
-import Header from '../components/Header'
+import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios'
 import ContactTable from '../components/ContactTable'
+import { UserContext } from "../components/AppContexts"
 
 const MainDashboard = (props) => {
 
-    const { thisUser, setThisUser, thisContact, setThisContact } = props
-    const [homepage, setHomepage] = useState(true)
+    const { thisUser, thisContact, setThisContact } = useContext(UserContext)
+    const [contactsList, setContactsList] = useState([])
+    const [loaded, setLoaded] = useState(false)
 
+    useEffect(()=>{
+        setLoaded(false)
+        axios.get("http://localhost:5000/api/contacts/all/" + thisUser.id)
+            .then((res)=>{
+                console.log(res.data)
+                setContactsList(res.data)
+                setLoaded(true)
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+    }, [])
+    
     return(
         <div>
-            <Header 
-                thisUser = { thisUser }
-                setThisUser = { setThisUser }
-                thisContact = { thisContact }
-                homepage = { homepage }
-            />
             <h1 className="mb-4">Village Overview</h1>
-            <ContactTable 
-                thisUser = { thisUser } 
-                thisContact = { thisContact }
-                setThisContact = { setThisContact }
-            />
+            { loaded && 
+                <ContactTable 
+                    thisContact = {thisContact}
+                    setThisContact = {setThisContact}
+                    contactsList = {contactsList}
+                    setContactsList = {setContactsList}
+                    loaded = {loaded}
+                    setLoaded = {setLoaded}
+                />
+            }
         </div>
     )
 }

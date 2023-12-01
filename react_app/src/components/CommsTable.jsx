@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { UserContext } from "./AppContexts"
 
 const CommsTable = (props) => {
 
-    const { thisUser, thisContact, thisComm, setThisComm } = props
+    const { thisContact, thisComm, setThisComm } = useContext(UserContext)
     const [commsList, setCommsList] = useState([])
     const [loaded, setLoaded] = useState(false)
     const navigate = useNavigate()

@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Header from '../components/Header'
 import CommsForm from '../components/CommsForm'
 import CommsTable from '../components/CommsTable'
+import { UserContext } from "../components/AppContexts"
 
 const EditContact = (props) => {
 
-    const { thisUser, setThisUser, thisContact, thisComm, setThisComm } = props
+    const { thisContact } = useContext(UserContext)
     const [errors, setErrors] = useState([])
-    const [homepage, setHomepage] = useState(false)
     const navigate = useNavigate()
-
-    useEffect(() => {setHomepage(false)}, [])
 
     const createComm = (contactParam) => {
         console.log(contactParam)
@@ -29,12 +26,6 @@ const EditContact = (props) => {
 
     return(
         <div>
-            <Header 
-                thisUser = { thisUser }
-                setThisUser = { setThisUser }
-                thisContact = { thisContact }
-                homepage = { homepage }
-            />
             <h1>Contact: { thisContact.firstName } { thisContact.lastName } </h1>
             <CommsForm 
                 onSubmitProp = { createComm }
@@ -47,12 +38,7 @@ const EditContact = (props) => {
                 btnTxt = "Add Communication"
             />
             <hr />
-            <CommsTable 
-                thisUser = { thisUser }
-                thisContact = { thisContact }
-                thisComm = { thisComm }
-                setThisComm = { setThisComm }
-            />
+            <CommsTable />
         </div>
     )
 }

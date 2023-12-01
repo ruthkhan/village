@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const ContactTable = (props) => {
 
-    const { thisUser, thisContact, setThisContact } = props
-    const [contactsList, setContactsList] = useState([])
-    const [loaded, setLoaded] = useState(false)
+    const { thisContact, setThisContact, contactsList, setContactsList, loaded, setLoaded } = props
     const navigate = useNavigate()
-
-    useEffect(()=>{
-        axios.get("http://localhost:5000/api/contacts/all/" + thisUser.id)
-            .then((res)=>{
-                console.log(res.data)
-                setContactsList(res.data)
-                setLoaded(true)
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
-    }, [loaded])
 
     const deleteContact = (contactId) => {
         if (confirm('Click ok to permanently remove this contact and all communication history with them')) {

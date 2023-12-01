@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Header from '../components/Header'
 import ContactForm from '../components/ContactForm'
 
 const AddContact = (props) => {
 
-    const { thisUser, setThisUser, thisContact } = props
     const [errors, setErrors] = useState([])
     const [homepage, setHomepage] = useState(false)
     const navigate = useNavigate()
@@ -27,12 +25,6 @@ const AddContact = (props) => {
 
     return(
         <div>
-            <Header 
-                thisUser = { thisUser }
-                setThisUser = { setThisUser }
-                thisContact = { thisContact }
-                homepage = { homepage }
-            />
             <h1>Add New Contact</h1>
             <ContactForm 
                 onSubmitProp = { createContact }

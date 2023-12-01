@@ -43,6 +43,15 @@ def get_one_contact(contact_id):
     response = make_response(contact_details)
     return response
 
+# Get linkedin details
+@app.route('/api/contacts/linkedin/<username>')
+def linkedin(username): 
+    data = Contact.get_linkedin(username)
+    response = make_response(data)
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+    response.headers['Access-Control-Allow-Credentials'] = True
+    return response
+
 #Update contact details
 @app.route('/api/contacts/update/<int:user_id>/<int:contact_id>', methods=['PATCH'])
 def update_contact(user_id, contact_id):

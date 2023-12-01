@@ -31,6 +31,13 @@ class User:
             return False
         return cls(result[0])
 
+    @classmethod
+    def update(cls, data):
+        query = """UPDATE users 
+                SET firstName=%(firstName)s, lastName=%(lastName)s, email=%(email)s 
+                WHERE id = %(id)s;"""
+        return connectToMySQL(cls.DB).query_db(query, data)
+
     @staticmethod
     def validate_user(user): 
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -44,6 +51,10 @@ class User:
         if not EMAIL_REGEX.match(user['email']):
             session['errors'] += {"Invalid email address"}
             is_valid = False
+        return is_valid
+
+    @staticmethod
+    def validate_password(user): 
         if len(user['password']) < 8: 
             session['errors'] += {"Password must be at least 8 characters"}
             is_valid = False

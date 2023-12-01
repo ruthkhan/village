@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Header from '../components/Header'
 import ContactForm from '../components/ContactForm'
 import CommsTable from '../components/CommsTable'
+import { UserContext } from "../components/AppContexts"
 
 const EditContact = (props) => {
 
-    const { thisUser, setThisUser, thisContact, setThisContact, thisComm, setThisComm } = props
+    const { thisUser, thisContact, setThisContact } = useContext(UserContext)
+    const [linkedin, setLinkedin] = useState({})
     const [errors, setErrors] = useState([])
-    const [homepage, setHomepage] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
-        setHomepage(false)
+        setLinkedin({})
         axios.get("http://localhost:5000/api/contacts/" + thisContact.id)
         .then((res)=>{
             console.log(res.data)
@@ -38,15 +38,37 @@ const EditContact = (props) => {
             })
     }
 
+    const getLinkedin = () => {
+        axios.get('http://localhost:5000/api/contacts/linkedin/' + thisContact.linkedin)
+            .then(res => {
+                console.log(res)
+                setLinkedin(res.data)
+            })
+            .catch(err => console.log(err))
+    }
+
     return(
         <div>
-            <Header 
-                thisUser = { thisUser }
-                setThisUser = { setThisUser }
-                thisContact = { thisContact }
-                homepage = { homepage }
-            />
-            <h1>Contact: { thisContact.firstName } { thisContact.lastName } </h1>
+            <div className="row mb-2 flex-md-row d-flex align-items-center">
+                <div className="col p-4 d-flex flex-column position-static">
+                    <h1>Contact: { thisContact.firstName } { thisContact.lastName } </h1>
+                    { linkedin ? 
+                    <p className="card-text mb-auto"> { linkedin.headline }</p>
+                    : null
+                    }
+                    { thisContact.linkedin ? 
+                    <button className="btn btn-outline-light mt-2 btn-sm col-3" onClick={ getLinkedin }>Get Short Linkedin Description</button>
+                    : null
+                    }
+                </div>
+                <div className="col-auto d-none d-lg-block">
+                { linkedin ?
+                    <img src={ `/${thisContact.linkedin}.png` } />
+                    : null 
+                }
+                </div>  
+            </div>
+
             { loaded && 
                 <ContactForm 
                     onSubmitProp = { updateContact }
@@ -62,12 +84,7 @@ const EditContact = (props) => {
                 />
             }
             <hr />
-            <CommsTable 
-                thisUser = { thisUser }
-                thisContact = { thisContact }
-                thisComm = { thisComm }
-                setThisComm = { setThisComm }
-            />
+            <CommsTable />
         </div>
     )
 }

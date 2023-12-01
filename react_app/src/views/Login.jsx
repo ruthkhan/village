@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import LoginForm from '../components/LoginForm'
+import { UserContext } from "../components/AppContexts"
 
 const Login = (props) => {
 
-    const { thisUser, setThisUser } = props
+    const { thisUser, setThisUser } = useContext(UserContext)
     const [errors, setErrors] = useState([])
     const navigate = useNavigate()
 

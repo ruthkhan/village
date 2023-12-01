@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import RegistrationForm from '../components/RegistrationForm'
 import peopleBanner from '../assets/peopleBanner.jpg'
+import { UserContext } from '../components/AppContexts'
 
 const Register = (props) => {
 
-    const { thisUser, setThisUser } = props
+    const { thisUser, setThisUser } = useContext(UserContext)
     const [errors, setErrors] = useState([])
     const navigate = useNavigate()
 
@@ -30,6 +31,11 @@ const Register = (props) => {
             <RegistrationForm 
                 onSubmitProp = { createUser }
                 errors = { errors }
+                initialFirstName = ""
+                initialLastName = ""
+                initialEmail = ""
+                btnTxt = "Create my account"
+                disablePwd = {false}
             />
         </div>
     )

@@ -1,4 +1,7 @@
 import re
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 from flask import session
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app.models import user, comm
@@ -51,6 +54,17 @@ class Contact:
         data = {'id': id}
         results = connectToMySQL(cls.DB).query_db(query, data)
         return results[0]
+
+    @classmethod
+    def get_linkedin(cls, username): 
+        driver = webdriver.Chrome()
+        driver.get("https://www.google.com/search?q=About+https://www.linkedin.com/in/" + username + "&tbm=ilp")
+        time.sleep(3)
+        headline = driver.find_element(By.CSS_SELECTOR, '[jsname="ij8cu"]').text
+        driver.find_element(By.CSS_SELECTOR, 'div.CQ2AG > div > div > img').screenshot('./react_app/public/' + username + '.png')
+        # Store the scraped data in a dictionary
+        profile_data = { "headline": headline }
+        return profile_data
 
     @classmethod
     def update(cls, data):
