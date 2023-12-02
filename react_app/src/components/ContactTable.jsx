@@ -9,16 +9,15 @@ const ContactTable = (props) => {
 
     const deleteContact = (contactId) => {
         if (confirm('Click ok to permanently remove this contact and all communication history with them')) {
+            setLoaded(false)
             axios.delete('http://localhost:5000/api/contacts/delete/' + contactId)
                 .then((res)=> {
                     console.log(res.data)
-                    setContactsList(contactsList => {
-                        contactsList.filter(contact=> contact.id != contactId)
-                    })
-                    setLoaded(false)
+                    setContactsList(contactsList.filter((contact) => contact.id != contactId))
                 })
                 .catch(err => console.log(err))
         }
+        setLoaded(true)
     }
 
     const setContact = (contactId) => {
@@ -41,8 +40,8 @@ const ContactTable = (props) => {
                     </tr>
                 </thead>
                 <tbody className="table-group-divider">
-                { contactsList ? 
-                    loaded && contactsList.map((one_contact) => 
+                { loaded && contactsList ? 
+                    contactsList.map((one_contact) => 
                     <tr key={ one_contact.contactId }>
                         <td>{ one_contact.firstName } { one_contact.lastName }</td>
                         <td>{ one_contact.commsStatus }</td>

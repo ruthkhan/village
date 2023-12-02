@@ -1,7 +1,4 @@
 import re
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 from flask import session
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app.models import user, comm
@@ -17,6 +14,8 @@ class Contact:
         self.email = data['email']
         self.phone = data['phone']
         self.linkedin = data['linkedin']
+        self.headline = data['headline']
+        self.photo = data['photo']
         self.preferred = data['preferred']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
@@ -34,10 +33,11 @@ class Contact:
     @classmethod
     def get_all_with_latest_comm(cls, data): 
         query = """
-            SELECT contacts.id AS contactId, firstName, lastName, MAX(commsDate) AS commsDate, ANY_VALUE(channel) AS commsChannel, ANY_VALUE(company) AS commsCompany, ANY_VALUE(status) AS commsStatus FROM contacts
-            LEFT JOIN comms ON comms.contact_id = contacts.id 
+            SELECT con.id AS contactId, firstName, lastName, headline, commsDate, com.channel AS commsChannel, com.company AS commsCompany, com.status AS commsStatus 
+            FROM contacts con
+            LEFT JOIN comms com ON com.contact_id = con.id 
+            AND commsDate = (SELECT MAX(commsDate) FROM comms WHERE contact_id = con.id)
             WHERE user_id = %(user_id)s 
-            GROUP BY contacts.id
             ORDER BY commsDate DESC;
             """
         results = connectToMySQL(cls.DB).query_db(query, data)
@@ -56,15 +56,11 @@ class Contact:
         return results[0]
 
     @classmethod
-    def get_linkedin(cls, username): 
-        driver = webdriver.Chrome()
-        driver.get("https://www.google.com/search?q=About+https://www.linkedin.com/in/" + username + "&tbm=ilp")
-        time.sleep(3)
-        headline = driver.find_element(By.CSS_SELECTOR, '[jsname="ij8cu"]').text
-        driver.find_element(By.CSS_SELECTOR, 'div.CQ2AG > div > div > img').screenshot('./react_app/public/' + username + '.png')
-        # Store the scraped data in a dictionary
-        profile_data = { "headline": headline }
-        return profile_data
+    def get_linkedin(cls, data): 
+        query = """UPDATE contacts
+            SET headline=%(headline)s, photo=%(photo)s
+            WHERE id=%(id)s;"""
+        return connectToMySQL(cls.DB).query_db(query, data)
 
     @classmethod
     def update(cls, data):

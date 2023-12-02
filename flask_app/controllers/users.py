@@ -31,8 +31,8 @@ def create_user():
         'firstName': request.json['firstName'],
         'lastName': request.json['lastName'], 
         'email': request.json['email']})
-    response.headers = [{'Access-Control-Allow-Origin': 'http://localhost:5173/', 
-        'Access-Control-Allow-Credentials': True}]
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+    response.headers['Access-Control-Allow-Credentials'] = True
     return response
 
 #Login User 

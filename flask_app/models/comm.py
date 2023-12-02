@@ -27,7 +27,9 @@ class Comm:
 
     @classmethod
     def get_all_for_contact(cls, data):
-        query = "SELECT * FROM comms WHERE contact_id = %(contact_id)s;"
+        query = """ SELECT * FROM comms 
+            WHERE contact_id = %(contact_id)s
+            ORDER BY commsDate DESC;"""
         results = connectToMySQL(cls.DB).query_db(query, data)
         if results: 
             results = Comm.convert_date(results)

@@ -55,6 +55,7 @@ class User:
 
     @staticmethod
     def validate_password(user): 
+        is_valid = True
         if len(user['password']) < 8: 
             session['errors'] += {"Password must be at least 8 characters"}
             is_valid = False

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import ContactForm from '../components/ContactForm'
+import { UserContext } from "../components/AppContexts"
 
 const AddContact = (props) => {
 
+    const { thisUser } = useContext(UserContext)
     const [errors, setErrors] = useState([])
     const [homepage, setHomepage] = useState(false)
     const navigate = useNavigate()

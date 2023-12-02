@@ -1,3 +1,6 @@
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 from flask import jsonify, request, session, make_response
 from flask_app import app
 from flask_cors import CORS
@@ -44,13 +47,22 @@ def get_one_contact(contact_id):
     return response
 
 # Get linkedin details
-@app.route('/api/contacts/linkedin/<username>')
-def linkedin(username): 
-    data = Contact.get_linkedin(username)
-    response = make_response(data)
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
-    response.headers['Access-Control-Allow-Credentials'] = True
-    return response
+@app.route('/api/contacts/linkedin/<int:contact_id>/<username>', methods=['PATCH'])
+def linkedin(username, contact_id): 
+        driver = webdriver.Chrome()
+        driver.get("https://www.google.com/search?q=About+https://www.linkedin.com/in/" + username + "&tbm=ilp")
+        time.sleep(3)
+        headline = driver.find_element(By.CSS_SELECTOR, '[jsname="ij8cu"]').text
+        driver.find_element(By.CSS_SELECTOR, 'div.CQ2AG > div > div > img').screenshot('./react_app/public/' + username + '.png')
+        # Store the scraped data in a dictionary
+        profile_data = { "headline": headline, 
+                        "photo": 1, 
+                        "id": contact_id }
+        Contact.get_linkedin(profile_data)
+        response = make_response(profile_data)
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Credentials'] = True
+        return response
 
 #Update contact details
 @app.route('/api/contacts/update/<int:user_id>/<int:contact_id>', methods=['PATCH'])
